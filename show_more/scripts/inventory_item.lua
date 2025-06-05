@@ -1,4 +1,6 @@
-function GetInventoryItemInfo(item)
+InventoryItem = {}
+
+function InventoryItem.GetInfo(item)
     if not item then
         return ""
     end
@@ -12,3 +14,5 @@ function GetInventoryItemInfo(item)
         print(hunger)
     end
 end
+
+return InventoryItem

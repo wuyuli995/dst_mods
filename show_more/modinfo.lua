@@ -1,7 +1,7 @@
 -- mod 名称
-name = "Detail"
+name = "Show More"
 -- 描述
-description = "show every thing's detail"
+description = "show more dst world's entity info"
 -- 作者
 author = "richjay"
 -- 版本
@@ -20,12 +20,10 @@ all_clients_require_mod = false
 -- 饥荒api版本，固定填10
 api_version = 10
 -- mod的配置项
-configuration_options = {
-    -- 信息模式：详细|简约
+configuration_options = {    
+    -- 攻击范围
 
-    -- 食物信息（三维|保鲜度）
+    -- 虫洞标记
 
-    -- 武器信息（伤害）
-
-    -- 防具（防雨|保暖|防御）
+    -- 语言
 }

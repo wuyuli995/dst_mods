@@ -1,6 +1,5 @@
--- Widget 所有widget的祖先类
+-- 角色属性（体温、伤害、防御、防雨、防雷...）
 local Widget = require "widgets/widget"
--- Text类 文本处理
 local Text = require "widgets/text"
 
 local PrefabProperties = Class(Widget, function(self, entity)
