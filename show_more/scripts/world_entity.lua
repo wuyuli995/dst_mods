@@ -1,14 +1,14 @@
 -- 获取剩余时间
-local getSubTime = function (time)
+local function getSubTime(time)
     return string.format("%.2f", ((time - GLOBAL.GetTime()) / 48) / 10)
 end
 
 -- 百分比转换
-local toPercentStr = function (percent)
+local function toPercentStr(percent)
     return string.format("%d%%", percent * 100)
 end
 
-local getInfo = function (target)
+local function getInfo(target)
     local info = {}
     if target.components then
         -- 血量
@@ -40,7 +40,7 @@ local getInfo = function (target)
 
         -- 武器
         if target.components.weapon then
-            info["伤害: "] = target.components.weapon.damage
+            info["伤害: "] = string.format("%.2f", target.components.weapon.damage)
         end
 
         -- 位面伤害
@@ -70,36 +70,24 @@ local getInfo = function (target)
         end
 
         -- 防水
-        if target.components.waterproofer then
-            info["防水: "] = toPercentStr(target.components.waterproofer:GetEffectiveness())
-        end
+        -- if target.components.waterproofer then
+        --     info["防水: "] = toPercentStr(target.components.waterproofer:GetEffectiveness())
+        -- end
 
         -- 保温
-        if target.components.insulator then
-            info["保温: "] = target.components.insulator:GetInsulation()
-        end
+        -- if target.components.insulator then
+        --     info["保温: "] = target.components.insulator:GetInsulation()
+        -- end
 
         -- 新鲜度
         if not target.components.health and target.components.perishable then
             info["新鲜度: "] = toPercentStr(target.components.perishable:GetPercent())
         end
 
-        -- 压力值
+        -- 农作物压力值
         if target.components.farmplantstress then
             local stressPoints = target.components.farmplantstress.stress_points
             info["压力值: "] = stressPoints
-
-            local stressState = target.components.farmplantstress:GetFinalStressState()
-            print("stressState -> ", stressState)
-            if stressState == GLOBAL.FARM_PLANT_STRESS.NONE then
-                info["压力程度: "] = "无"
-            elseif stressState == GLOBAL.FARM_PLANT_STRESS.LOW then
-                info["压力程度: "] = "低"
-            elseif stressState == GLOBAL.FARM_PLANT_STRESS.MODERATE then
-                info["压力程度: "] = "中"
-            elseif stressState == GLOBAL.FARM_PLANT_STRESS.HIGH then
-                info["压力程度: "] = "高"
-            end
         end
 
         -- if target.components.inventory and target.components.equippable then
