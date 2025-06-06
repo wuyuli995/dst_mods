@@ -11,6 +11,7 @@ local function getInfo(item)
 
     -- 如果物品可食用
     if item.components.edible then
+        -- 三维
         local hunger = item.components.edible:GetHunger(item)
         if hunger > 0 then
             info["饥饿: "] = string.format("+%.2f", hunger)
@@ -31,6 +32,51 @@ local function getInfo(item)
         elseif health < 0 then
             info["生命: "] = string.format("%2.f", health)
         end
+    end
+
+    -- 保质期
+    if item.components.perishable then
+        info["保质期: "] = GetPerishremainingTime(item.components.perishable.perishremainingtime)
+    end
+
+    -- 武器
+    if item.components.weapon then
+        info["伤害: "] = string.format("%.2f", item.components.weapon.damage)
+    end
+
+    -- 位面伤害
+    if item.components.planardamage then
+        info["位面伤害: "] = item.components.planardamage:GetDamage()
+    end
+
+    -- 防具
+    if item.components.armor then
+        info["防御: "] = ToPercent(item.components.armor.absorb_percent)
+    end
+
+    -- 位面防御
+    if item.components.planardefense then
+        info["位面防御: "] = item.components.planardefense:GetDefense()
+    end
+    
+    -- 防水
+    if item.components.waterproofer then
+        info["防水: "] = ToPercent(item.components.waterproofer:GetEffectiveness())
+    end
+
+    -- 保温
+    if item.components.insulator then
+        info["保温: "] = item.components.insulator:GetInsulation()
+    end
+
+    -- 使用次数
+    if item.components.finiteuses then
+        info["次数: "] = item.components.finiteuses:GetUses()
+    end
+
+    -- 温度(暖石)
+    if item.components.temperature then
+        info["温度: "] = string.format("%2.f°C", item.components.temperature:GetCurrent())
     end
 
     local str = ""

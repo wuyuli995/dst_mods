@@ -1,13 +1,3 @@
--- 获取剩余时间
-local function getSubTime(time)
-    return string.format("%.2f", ((time - GLOBAL.GetTime()) / 48) / 10)
-end
-
--- 百分比转换
-local function toPercentStr(percent)
-    return string.format("%d%%", percent * 100)
-end
-
 local function getInfo(target)
     local info = {}
     if target.components then
@@ -25,12 +15,12 @@ local function getInfo(target)
         if target.components.growable and target.components.growable.targettime then
             -- GLOBAL.GetTime() 获取饥荒世界当前的时间
             info["阶段: "] = string.format("%d / %d",target.components.growable:GetStage(), #target.components.growable.stages)
-            info["下一阶段: "] = getSubTime(target.components.growable.targettime) .. "天"
+            info["下一阶段: "] = GetSubTime(target.components.growable.targettime) .. "天"
         end
 
         -- 检查目标实体是否可以被采摘，并且有目标时间（树枝、草、浆果、咖啡树）
         if target.components.pickable and target.components.pickable.targettime then
-            info["成熟: "] = getSubTime(target.components.pickable.targettime) .. "天"
+            info["成熟: "] = GetSubTime(target.components.pickable.targettime) .. "天"
         end
 
         -- 检查目标实体是否有晾肉架组件，并且正在晾肉，获取晾肉时间的方法
@@ -50,8 +40,8 @@ local function getInfo(target)
 
         -- 防具
         if target.components.armor then
-            info["防御: "] = toPercentStr(target.components.armor.absorb_percent)
-            info["耐久: "] = toPercentStr(target.components.armor:GetPercent())
+            info["防御: "] = ToPercent(target.components.armor.absorb_percent)
+            info["耐久: "] = ToPercent(target.components.armor:GetPercent())
         end
 
         -- 位面防御
@@ -66,12 +56,12 @@ local function getInfo(target)
 
         -- 燃料耐久
         if target.components.fueled then
-            info["耐久: "] = toPercentStr(target.components.fueled:GetPercent())
+            info["耐久: "] = ToPercent(target.components.fueled:GetPercent())
         end
 
         -- 防水
         -- if target.components.waterproofer then
-        --     info["防水: "] = toPercentStr(target.components.waterproofer:GetEffectiveness())
+        --     info["防水: "] = util.ToPercent(target.components.waterproofer:GetEffectiveness())
         -- end
 
         -- 保温
@@ -79,9 +69,9 @@ local function getInfo(target)
         --     info["保温: "] = target.components.insulator:GetInsulation()
         -- end
 
-        -- 新鲜度
+        -- 保质期
         if not target.components.health and target.components.perishable then
-            info["新鲜度: "] = toPercentStr(target.components.perishable:GetPercent())
+            info["保质期: "] = GetPerishremainingTime(target.components.perishable.perishremainingtime)
         end
 
         -- 农作物压力值
@@ -90,36 +80,10 @@ local function getInfo(target)
             info["压力值: "] = stressPoints
         end
 
-        -- if target.components.inventory and target.components.equippable then
-        --     -- 手部装备
-        --     local handEquipment = target.components.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
-        --     print("hand -->", handEquipment)
-        --     if handEquipment then
-        --         info["伤害: "] = handEquipment.components.weapon.damage
-        --         info["耐久: "] = toPercentStr(handEquipment.components.finiteuses:GetPercent())
-
-        --         -- 攻击方式
-        --         if handEquipment.components.weapon:CanRangedAttack() then
-        --             info["攻击方式: "] = "远程"
-        --         else
-        --             info["攻击方式: "] = "近战"
-        --         end
-        --     end
-
-        --     -- 头部装备
-        --     local headEquipment = target.components.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HEAD)
-        --     print("head -->", headEquipment)
-        --     if headEquipment then
-        --         -- 防御
-        --         info["防御: "] = toPercentStr(headEquipment.components.armor.absorb_percent)
-        --         info["耐久: "] = toPercentStr(headEquipment.components.armor:GetPercent())
-        --     end
-
-        --     -- 修复
-        --     if target.components.repairable then
-        --         info["修复: "] = target.components.repairable.repairmaterial
-        --     end
-        -- end
+        -- 温度(暖石)
+        if target.components.temperature then
+            info["温度: "] = string.format("%2.f°C", target.components.temperature:GetCurrent())
+        end
 
     end
 

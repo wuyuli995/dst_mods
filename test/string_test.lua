@@ -1,2 +1,3 @@
-local a = string.format("%d%%", 0.98*100)
-print(a)
+local a = require "require_test"
+
+print(a.ToString("aa"))
