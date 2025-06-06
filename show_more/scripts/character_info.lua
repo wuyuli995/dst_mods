@@ -84,10 +84,18 @@ local getCharacterInfo = function ()
 
     local info = {}
     info["移速: "] = runspeed
-    info["伤害: "] = string.format("%.2f + %d", damage, planardamage)
-    info["防御: "] = string.format("%.2f + %d", defense, planardefense)
+    info["伤害: "] = string.format("%.2f", damage)
+    info["防御: "] = string.format("%.2f", defense)
     info["防水: "] = string.format("%d%%", waterproofer)
     info["保温: "] = string.format("%d%%", insulator)
+
+    if planardamage > 0 then
+        info["伤害: "] = string.format("%.2f + %d", damage, planardamage)
+    end
+
+    if planardefense then
+        info["防御: "] = string.format("%.2f + %d", defense, planardefense)
+    end
 
     local str = ""
     for key, value in pairs(info) do
