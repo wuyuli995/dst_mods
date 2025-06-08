@@ -1,4 +1,4 @@
-local function getInfo(target)
+local function getWorldEntityInfo(target)
     local info = {}
     if target.components then
         -- 血量
@@ -59,16 +59,6 @@ local function getInfo(target)
             info["耐久: "] = ToPercent(target.components.fueled:GetPercent())
         end
 
-        -- 防水
-        -- if target.components.waterproofer then
-        --     info["防水: "] = util.ToPercent(target.components.waterproofer:GetEffectiveness())
-        -- end
-
-        -- 保温
-        -- if target.components.insulator then
-        --     info["保温: "] = target.components.insulator:GetInsulation()
-        -- end
-
         -- 保质期
         if not target.components.health and target.components.perishable then
             info["保质期: "] = GetPerishremainingTime(target.components.perishable.perishremainingtime)
@@ -104,7 +94,7 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         if target then
             -- 获取饥荒世界预制物相关信息
-            str = str .. getInfo(target)
+            str = str .. getWorldEntityInfo(target)
         end
 
         return setString(text, str)

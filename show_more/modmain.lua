@@ -7,5 +7,6 @@ modimport("scripts/world_entity")
 -- 获取物品栏里的物品信息
 modimport("scripts/inventory_item")
 
--- 获取角色信息
-modimport("scripts/character_info")
+-- 角色信息面板
+modimport("scripts/character")
+

@@ -2,7 +2,7 @@ local Inv = GLOBAL.require "widgets/inventorybar"
 local ItemTile = GLOBAL.require "widgets/itemtile"
 local Text = GLOBAL.require "widgets/text"
 
-local function getInfo(item)
+local function getInventoryItemInfo(item)
     if not item then
         return ""
     end
@@ -108,7 +108,7 @@ function ItemTile:GetDescriptionString()
 
     -- 如果物品存在并有 inventoryitem 组件
     if self.item and self.item.components and self.item.components.inventoryitem then
-        str = getInfo(self.item)
+        str = getInventoryItemInfo(self.item)
     end
 
     if string.len(str) > 0 then

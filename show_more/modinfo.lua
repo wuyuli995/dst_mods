@@ -20,7 +20,7 @@ all_clients_require_mod = false
 -- 饥荒api版本，固定填10
 api_version = 10
 -- mod的配置项
-configuration_options = {    
+configuration_options = {
     -- 攻击范围
 
     -- 虫洞标记
