@@ -153,6 +153,8 @@ function CharacterInfoWidget:UpdateText()
     -- 保温
     text = text .. string.format("保温: %d\n", self.insulator)
 
+    -- 淘气值
+
     self.text = self:AddChild(Text(BODYTEXTFONT, 30, text))
 end
 
