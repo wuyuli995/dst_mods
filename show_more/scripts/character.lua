@@ -1,38 +1,40 @@
-local characterWidget = require "widgets/character_info_widget"
+local characterInfoWidget = require "widgets/character_info_widget"
 
-CharacterInfo = {
-   runspeed = 0,
-   damage = 0,
-   planardamage = 0,
-   defense = 0,
-   planardefense = 0,
-   waterproofer = 0,
-   insulator = 0,
-   temperature = 0
-}
+local defaultDamage = 0
+local runspeed = 0
+local ciWidget = nil
+
+-- 角色初始化之后进行 CharacterInfoWidget 的初始化
+AddPlayerPostInit(function(inst)
+    defaultDamage = inst.components.combat.defaultdamage
+    runspeed = inst.components.locomotor.runspeed
+    
+    -- CharacterInfo.damage = inst.components.combat.defaultdamage
+    -- CharacterInfo.runspeed = inst.components.locomotor.runspeed
+    -- CharacterInfo.temperature = inst.components.temperature.current
+end)
 
 -- 获取角色信息
 AddClassPostConstruct("widgets/controls", function (self)
-    self.characterWidget = self:AddChild(characterWidget())
+    ciWidget = characterInfoWidget(runspeed, defaultDamage)
+    self.characterInfoWidget = self:AddChild(ciWidget)
 
     -- 设置原点x坐标位置，0、1、2分别对应屏幕中、左、右
-    self.characterWidget:SetHAnchor(1)
+    self.characterInfoWidget:SetHAnchor(GLOBAL.ANCHOR_RIGHT)
 
     -- 设置原点y坐标位置，0、1、2分别对应屏幕中、上、下
-    self.characterWidget:SetVAnchor(2)
+    self.characterInfoWidget:SetVAnchor(GLOBAL.ANCHOR_TOP)
 
     -- widget相对原点的偏移量，70，-50表明: 向右70，向下50，第三个参数无意义。
-    self.characterWidget:SetPosition(100, 100, 0)
-end)
-
-AddPlayerPostInit(function(inst)
-    CharacterInfo.damage = inst.components.combat.defaultdamage
-    CharacterInfo.runspeed = inst.components.locomotor.runspeed
-    CharacterInfo.temperature = inst.components.temperature.current
+    self.characterInfoWidget:SetPosition(-180, -100, 0)
 end)
 
 -- -- 监听装备栏装备情况
 AddClassPostConstruct("components/equippable", function(self)
+    if ciWidget == nil then
+        return
+    end
+
     self.inst:ListenForEvent("equipped", function (inst, data)
         local owner = data.owner
         if not owner then
@@ -45,22 +47,52 @@ AddClassPostConstruct("components/equippable", function(self)
 
         local equippable = inst.components.equippable
         if equippable.equipslot == GLOBAL.EQUIPSLOTS.HANDS then
-            characterWidget:UpdateHandEquipmentInfo(inst)
+            ciWidget:HandEquipped(inst)
         end
 
-        -- if inst.prefab ~= nil and (inst.components.weapon or inst.components.armor) then
-        --     print("equipped ->", inst.prefab)
+        if equippable.equipslot == GLOBAL.EQUIPSLOTS.HEAD then
+            ciWidget:HeadEquipped(inst)
+        end
 
-        --     local handEquipment = inst.components.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
-        --     if handEquipment then
-        --         characterInfo:UpdateHandEquipmentInfo(handEquipment)
-        --     end
-        -- end
+        if equippable.equipslot == GLOBAL.EQUIPSLOTS.BODY then
+            ciWidget:BodyEquipped(inst)
+        end
     end)
 
     self.inst:ListenForEvent("unequipped", function (inst, data)
-        if inst.prefab and (inst.components.weapon or inst.components.armor) then
-            print("unequipped ->", inst.prefab)
+        local owner = data.owner
+        if not owner then
+            return
+        end
+
+        if inst.prefab == nil then
+            return
+        end
+
+        local equippable = inst.components.equippable
+        if equippable.equipslot == GLOBAL.EQUIPSLOTS.HANDS then
+            ciWidget:HandUnEquipped(inst)
+        end
+
+        if equippable.equipslot == GLOBAL.EQUIPSLOTS.HEAD then
+            ciWidget:HeadUnEquipped(inst)
+        end
+
+        if equippable.equipslot == GLOBAL.EQUIPSLOTS.BODY then
+            ciWidget:BodyUnEquipped(inst)
         end
     end)
+end)
+
+-- 监听角色温度
+AddClassPostConstruct("components/temperature", function(self)
+    -- 一秒更新一次
+    self.inst:DoPeriodicTask(1, function ()
+        if ciWidget == nil then
+            return
+        end
+
+        ciWidget:UpdateTemperature(self.inst.components.temperature:GetCurrent())
+    end)
+    
 end)

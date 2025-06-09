@@ -72,7 +72,7 @@ local function getWorldEntityInfo(target)
 
         -- 温度(暖石)
         if target.components.temperature then
-            info["温度: "] = string.format("%2.f°C", target.components.temperature:GetCurrent())
+            info["温度: "] = string.format("%1.f°C", target.components.temperature:GetCurrent())
         end
 
     end
