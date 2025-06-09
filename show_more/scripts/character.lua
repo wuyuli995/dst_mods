@@ -8,10 +8,8 @@ local ciWidget = nil
 AddPlayerPostInit(function(inst)
     defaultDamage = inst.components.combat.defaultdamage
     runspeed = inst.components.locomotor.runspeed
-    
-    -- CharacterInfo.damage = inst.components.combat.defaultdamage
-    -- CharacterInfo.runspeed = inst.components.locomotor.runspeed
-    -- CharacterInfo.temperature = inst.components.temperature.current
+
+    print("--->", inst.player)
 end)
 
 -- 获取角色信息
@@ -26,7 +24,7 @@ AddClassPostConstruct("widgets/controls", function (self)
     self.characterInfoWidget:SetVAnchor(GLOBAL.ANCHOR_TOP)
 
     -- widget相对原点的偏移量，70，-50表明: 向右70，向下50，第三个参数无意义。
-    self.characterInfoWidget:SetPosition(-180, -100, 0)
+    self.characterInfoWidget:SetPosition(-200, -100, 0)
 end)
 
 -- -- 监听装备栏装备情况

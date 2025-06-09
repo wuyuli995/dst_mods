@@ -1,95 +1,6 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
--- 角色信息：伤害、防御、防水、体温、移速、淘气值
-local function initCharacterInfo()
-    local player = ThePlayer
-    local info = {
-        runspeed = player.components.locomotor.runspeed,
-        damage = player.components.combat.defaultdamage,
-        planardamage = 0,
-        defense = 0,
-        planardefense = 0,
-        waterproofer = 0,
-        insulator = 0
-    }
-
-    -- 装备栏
-    if player.components.inventory then
-        -- 手部装备
-        local handEquipment = player.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        print("handEquipment ->", handEquipment)
-        if handEquipment then
-            -- 伤害
-            if handEquipment.components.weapon then
-                info.damage = info.damage + handEquipment.components.weapon.damage
-            end
-
-            -- 位面伤害
-            if handEquipment.components.planardamage then
-                info.planardamage = handEquipment.components.planardamage:GetDamage()
-            end
-
-            -- 移速
-            if handEquipment.components.equippable.walkspeedmult then
-                info.runspeed = info.runspeed + (info.runspeed * handEquipment.components.equippable.walkspeedmult)
-            end
-        end
-
-        -- 头部装备
-        local headEquipment = player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-        print("headEquipment ->", headEquipment)
-        if headEquipment then
-            -- 防御
-            if headEquipment.components.armor and headEquipment.components.armor:GetPercent() > defense then
-                info.defense = headEquipment.components.armor:GetPercent()
-            end
-
-            -- 位面防御
-            if headEquipment.components.planardefense and headEquipment.components.planardefense:GetDefense() > planardefense then
-                info.planardefense = headEquipment.components.planardefense:GetDefense()
-            end
-
-            -- 防水
-            if headEquipment.components.waterproofer and headEquipment.components.waterproofer:GetEffectiveness() > waterproofer then
-                info.waterproofer = headEquipment.components.waterproofer:GetEffectiveness()
-            end
-
-            -- 保温
-            if headEquipment.components.insulator and headEquipment.components.insulator:GetInsulation() > insulator then
-                info.insulator = headEquipment.components.insulator:GetInsulation()
-            end
-        end
-
-        -- 身体装备
-        local bodyEquipment = player.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-        print("bodyEquipment ->", bodyEquipment)
-        if bodyEquipment then
-            -- 防御
-            if bodyEquipment.components.armor and bodyEquipment.components.armor:GetPercent() > defense then
-                info.defense = bodyEquipment.components.armor:GetPercent()
-            end
-
-            -- 位面防御
-            if bodyEquipment.components.planardefense and bodyEquipment.components.planardefense:GetDefense() > planardefense then
-                info.planardefense = bodyEquipment.components.planardefense:GetDefense()
-            end
-
-            -- 防水
-            if bodyEquipment.components.waterproofer and bodyEquipment.components.waterproofer:GetEffectiveness() > waterproofer then
-                info.waterproofer = bodyEquipment.components.waterproofer:GetEffectiveness()
-            end
-
-            -- 保温
-            if bodyEquipment.components.insulator and bodyEquipment.components.insulator:GetInsulation() > insulator then
-                info.insulator = bodyEquipment.components.insulator:GetInsulation()
-            end
-        end
-    end
-
-    return info
-end
-
 local CharacterInfoWidget = Class(Widget, function (self, runspeed, damage)
     Widget._ctor(self, "CharacterInfoWidget")
 
@@ -318,12 +229,8 @@ end
 function CharacterInfoWidget:UpdateInfo()
     local text = self:GetInfoText()
     
-    -- if self.text then
-    --     self:RemoveChild(self.text)
-    -- end
-
     self:KillAllChildren()
-    self.text = self:AddChild(Text(BODYTEXTFONT, 25, text))
+    self.text = self:AddChild(Text(BODYTEXTFONT, 20, text))
     self.text:SetVAlign(ANCHOR_BOTTOM)
     self.text:SetHAlign(ANCHOR_LEFT)
 end
