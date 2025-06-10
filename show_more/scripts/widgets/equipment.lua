@@ -1,8 +1,10 @@
+-- 装备栏信息widget
+
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
-local CharacterInfoWidget = Class(Widget, function (self, runspeed, damage)
-    Widget._ctor(self, "CharacterInfoWidget")
+local Equipment = Class(Widget, function (self, runspeed, damage)
+    Widget._ctor(self, "Equipment")
 
     self.baseRunspeed = runspeed
     self.baseDamage = damage
@@ -27,14 +29,11 @@ local CharacterInfoWidget = Class(Widget, function (self, runspeed, damage)
     -- 手部防水
     self.handWaterproofer = 0
 
-    self.temperature = 0
-    self.text = nil
-
     self:UpdateInfo()
 end)
 
 -- 手部装备装备
-function CharacterInfoWidget:HandEquipped(handEquipment)
+function Equipment:HandEquipped(handEquipment)
     if handEquipment == nil then
         return
     end
@@ -63,7 +62,7 @@ function CharacterInfoWidget:HandEquipped(handEquipment)
 end
 
 -- 手部装备卸下
-function CharacterInfoWidget:HandUnEquipped(handEquipment)
+function Equipment:HandUnEquipped(handEquipment)
     if handEquipment == nil then
         return
     end
@@ -92,7 +91,7 @@ function CharacterInfoWidget:HandUnEquipped(handEquipment)
 end
 
 -- 头部装备装备
-function CharacterInfoWidget:HeadEquipped(headEquipment)
+function Equipment:HeadEquipped(headEquipment)
     if headEquipment == nil then
         return
     end
@@ -116,7 +115,7 @@ function CharacterInfoWidget:HeadEquipped(headEquipment)
 end
 
 -- 头部装备卸下
-function CharacterInfoWidget:HeadUnEquipped(headEquipment)
+function Equipment:HeadUnEquipped(headEquipment)
     if headEquipment == nil then
         return
     end
@@ -129,7 +128,7 @@ function CharacterInfoWidget:HeadUnEquipped(headEquipment)
 end
 
 -- 身体装备装备
-function CharacterInfoWidget:BodyEquipped(headEquipment)
+function Equipment:BodyEquipped(headEquipment)
     if headEquipment == nil then
         return
     end
@@ -153,7 +152,7 @@ function CharacterInfoWidget:BodyEquipped(headEquipment)
 end
 
 -- 身体装备卸下
-function CharacterInfoWidget:BodyUnEquipped(headEquipment)
+function Equipment:BodyUnEquipped(headEquipment)
     if headEquipment == nil then
         return
     end
@@ -165,15 +164,8 @@ function CharacterInfoWidget:BodyUnEquipped(headEquipment)
     self:UpdateInfo()
 end
 
--- 更新角色温度
-function CharacterInfoWidget:UpdateTemperature(temperature)
-    self.temperature = temperature
-
-    self:UpdateInfo()
-end
-
 -- 获取面板信息
-function CharacterInfoWidget:GetInfoText()
+function Equipment:GetInfoText()
     local text = ""
     -- 伤害
     local damageStr = string.format("%d", math.floor(self.damage + 0.5))
@@ -214,19 +206,13 @@ function CharacterInfoWidget:GetInfoText()
     if self.bodyWaterproofer > waterproofer then
         waterproofer = self.bodyWaterproofer
     end
-    
     text = text .. string.format("防水: %d%%\n", waterproofer)
-
-    -- 体温
-    text = text .. string.format("体温: %d°C\n", self.temperature)
-
-    -- 淘气值
 
     return text
 end
 
 -- 更新面板信息
-function CharacterInfoWidget:UpdateInfo()
+function Equipment:UpdateInfo()
     local text = self:GetInfoText()
     
     self:KillAllChildren()
@@ -235,4 +221,4 @@ function CharacterInfoWidget:UpdateInfo()
     self.text:SetHAlign(ANCHOR_LEFT)
 end
 
-return CharacterInfoWidget
+return Equipment

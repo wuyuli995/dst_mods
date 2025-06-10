@@ -8,5 +8,6 @@ modimport("scripts/world_entity")
 modimport("scripts/inventory_item")
 
 -- 角色信息面板
-modimport("scripts/character")
+modimport("scripts/w_character")
+modimport("scripts/w_equipment")
 

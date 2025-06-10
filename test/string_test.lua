@@ -1,3 +1,4 @@
-local a = require "require_test"
+local a = "Player 118089 - wilson - Actions: 10 / 35, decay in 60.00"
 
-print(a.ToString("aa"))
+local ma = string.match(a, "%d+ / %d+")
+print(ma)
