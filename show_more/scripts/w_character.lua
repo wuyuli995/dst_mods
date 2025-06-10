@@ -7,13 +7,13 @@ AddClassPostConstruct("widgets/controls", function (self)
     self.characterInfoWidget = self:AddChild(ciWidget)
 
     -- 设置原点x坐标位置，0、1、2分别对应屏幕中、左、右
-    self.characterInfoWidget:SetHAnchor(GLOBAL.ANCHOR_RIGHT)
+    self.characterInfoWidget:SetHAnchor(GLOBAL.ANCHOR_LEFT)
 
     -- 设置原点y坐标位置，0、1、2分别对应屏幕中、上、下
-    self.characterInfoWidget:SetVAnchor(GLOBAL.ANCHOR_MIDDLE)
+    self.characterInfoWidget:SetVAnchor(GLOBAL.ANCHOR_BOTTOM)
 
     -- widget相对原点的偏移量，70，-50表明: 向右70，向下50，第三个参数无意义。
-    self.characterInfoWidget:SetPosition(-50, 110, 0)
+    self.characterInfoWidget:SetPosition(70, 30, 0)
 end)
 
 -- 监听角色温度

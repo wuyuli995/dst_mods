@@ -21,6 +21,12 @@ all_clients_require_mod = false
 api_version = 10
 -- mod的配置项
 configuration_options = {
+    -- 装备信息
+
+    -- 人物信息
+
+    -- 季节信息
+    
     -- 攻击范围
 
     -- 虫洞标记
