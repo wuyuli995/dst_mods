@@ -27,11 +27,11 @@ end)
 
 -- -- 监听装备栏装备情况
 AddComponentPostInit("equippable", function(self)
-    if equipWidget == nil then
-        return
-    end
-
     self.inst:ListenForEvent("equipped", function (inst, data)
+        if equipWidget == nil then
+            return
+        end
+
         local owner = data.owner
         if not owner then
             return
@@ -56,6 +56,10 @@ AddComponentPostInit("equippable", function(self)
     end)
 
     self.inst:ListenForEvent("unequipped", function (inst, data)
+        if equipWidget == nil then
+            return
+        end
+        
         local owner = data.owner
         if not owner then
             return
@@ -66,6 +70,7 @@ AddComponentPostInit("equippable", function(self)
         end
 
         local equippable = inst.components.equippable
+        print("equippable ==>", equippable)
         if equippable.equipslot == GLOBAL.EQUIPSLOTS.HANDS then
             equipWidget:HandUnEquipped(inst)
         end

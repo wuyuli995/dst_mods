@@ -12,5 +12,5 @@ modimport("scripts/w_character")
 modimport("scripts/w_equipment")
 
 -- 世界时钟信息
-modimport("scripts/ui_clock")
+modimport("scripts/w_clock")
 

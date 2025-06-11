@@ -56,3 +56,14 @@ AddComponentPostInit("kramped", function(self)
         end, player)
     end, self.inst)
 end)
+
+-- 潮湿度
+AddComponentPostInit("moisture", function (self)
+    self.inst:ListenForEvent("moisturedelta", function (player, data)
+        if ciWidget == nil then
+            return
+        end
+
+        ciWidget:UpdateMoisture(self:GetMoisturePercent(), data.old - data.new)
+    end)
+end)

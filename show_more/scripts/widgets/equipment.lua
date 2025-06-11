@@ -80,6 +80,8 @@ function Equipment:HandUnEquipped(handEquipment)
     -- 移速
     if handEquipment.components.equippable.walkspeedmult then
         self.runspeed = self.baseRunSpeed
+        print("runspeed =>", self.runspeed)
+        print("baseRunSpeed =>", self.baseRunSpeed)
     end
 
     -- 防水
