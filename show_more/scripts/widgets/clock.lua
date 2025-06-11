@@ -58,21 +58,21 @@ end
 
 -- 月相信息
 local function getMoonPhase(cycles)
+    local c = cycles % #MOON_PHASE_CYCLES
     local moonPhase = ""
-    if cycles > 1 and cycles < 11 then
-        -- 计算满月
-        local fullMoonDays = 11 - cycles
-        if fullMoonDays > 0 then
-            moonPhase = string.format("满月: %d天后\n", fullMoonDays)
-        else
-            moonPhase = string.format("满月: 今晚\n")
-        end
+    if c == 0 then
+        moonPhase = string.format("新月: 今晚\n")
     else
-        -- 计算新月
-        if cycles == 1 then
-            moonPhase = string.format("新月: 今晚\n")
+        if c <= 10 then
+            -- 计算满月
+            local fullMoonDays = 10 - c
+            if fullMoonDays > 0 then
+                moonPhase = string.format("满月: %d天后\n", fullMoonDays)
+            else
+                moonPhase = string.format("满月: 今晚\n")
+            end
         else
-            local newMoodDays = #MOON_PHASE_CYCLES - cycles + 1
+            local newMoodDays = #MOON_PHASE_CYCLES - c
             moonPhase = string.format("新月: %d天后\n", newMoodDays)
         end
     end

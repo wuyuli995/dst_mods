@@ -1,15 +1,6 @@
 local clock = require "widgets/clock"
 
 local clockWidget = nil
-local MOON_PHASE_NAMES =
-{
-    "new",
-    "quarter",
-    "half",
-    "threequarter",
-    "full",
-}
-local MOON_PHASE_CYCLES = {1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2}
 
 AddComponentPostInit("worldstate", function(self)
     clockWidget = clock()
@@ -40,15 +31,16 @@ AddComponentPostInit("worldstate", function(self)
     end)
 
     self.inst:ListenForEvent("cycleschanged", function (src, cycles)
-        -- (1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5)
-        local moonPhaseCycles = MOON_PHASE_CYCLES[cycles+1]
-        print("月相 =====>", MOON_PHASE_NAMES[moonPhaseCycles])
-
         if clockWidget == nil then
             return
         end
 
-        clockWidget:UpdateCycles(cycles+1)
+        print("cycles -->", cycles)
+        clockWidget:UpdateCycles(cycles)
+    end)
+
+    self.inst:ListenForEvent("moonphasechanged2", function (src, data)
+        print("moonphasechanged2 -->", data.moonphase)
     end)
 end)
 
@@ -62,5 +54,5 @@ AddClassPostConstruct("widgets/controls", function (self)
     self.clockWidget:SetVAnchor(GLOBAL.ANCHOR_TOP)
 
     -- widget相对原点的偏移量，70，-50表明: 向右70，向下50，第三个参数无意义。
-    self.clockWidget:SetPosition(-180, -40, 0)
+    self.clockWidget:SetPosition(-180, -100, 0)
 end)

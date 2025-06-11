@@ -3,7 +3,7 @@ local function getWorldEntityInfo(target)
     if target.components then
         -- 血量
         if target.components.health then
-            info["血量: "] = string.format("%s/%s", target.components.health.currenthealth, target.components.health.maxhealth)
+            info["血量: "] = string.format("%d/%d", target.components.health.currenthealth, target.components.health.maxhealth)
         end
 
         -- 伤害 如果目标实体有战斗组件，并且默认伤害大于0

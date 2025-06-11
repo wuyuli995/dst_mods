@@ -6,6 +6,8 @@ local Text = require "widgets/text"
 local Equipment = Class(Widget, function (self, runspeed, damage)
     Widget._ctor(self, "Equipment")
 
+    print("runspeed ->", runspeed)
+    print("damage ->", damage)
     self.baseRunspeed = runspeed
     self.baseDamage = damage
     self.runspeed = runspeed
@@ -79,9 +81,7 @@ function Equipment:HandUnEquipped(handEquipment)
 
     -- 移速
     if handEquipment.components.equippable.walkspeedmult then
-        self.runspeed = self.baseRunSpeed
-        print("runspeed =>", self.runspeed)
-        print("baseRunSpeed =>", self.baseRunSpeed)
+        self.runspeed = self.baseRunspeed
     end
 
     -- 防水
