@@ -84,24 +84,28 @@ local function getWorldEntityInfo(target)
         end
 
         -- 训牛信息(绑定牛铃后或者喂食之后显示)
-        if target.components.follower then
-            print("follower -->", target.components.follower:GetLeader())
-        end
         if target.components.domesticatable then
             local obedience = target.components.domesticatable:GetObedience()
+            local domestication = target.components.domesticatable:GetDomestication()
             if obedience > 0 or (target.components.follower and target.components.follower:GetLeader()) then
-                text = text .. string.format("顺从: %s\n", ToPercent(obedience))
+                text = text .. string.format("饥饿: %d/%d\n", target.components.hunger.current, target.components.hunger.max)
+                text = text .. string.format("顺从: %s%%\n", string.format("%.2f", obedience*100))
+                text = text .. string.format("驯化: %s%%\n", string.format("%.2f", domestication*100))
 
-                local domestication = math.floor(target.components.domesticatable:GetDomestication() + 0.5)
-                text = text .. string.format("驯化: %s\n", ToPercent(domestication))
+                -- 训势
+                for key, value in pairs(target.components.domesticatable.tendencies) do
+                    if key == GLOBAL.TENDENCY.ORNERY then
+                        text = text .. string.format("战牛: %.2f%%\n", value)
+                    elseif key == GLOBAL.TENDENCY.RIDER then
+                        text = text .. string.format("行牛: %.2f%%\n", value)
+                    elseif key == GLOBAL.TENDENCY.PUDGY then
+                        text = text .. string.format("肥牛: %.2f%%\n", value)
+                    end
+                end
             end
 
-            print("驯化 ->", target.components.domesticatable:GetDomestication())
-            print("顺从 ->", string.format("%.2f", target.components.domesticatable:GetObedience()*100))
-            print("是否驯化 ->", target.components.domesticatable.domesticated)
-
             if target.components.domesticatable.domesticated then
-                -- 如果已经驯化，则显示是什`么类型
+                -- 如果已经驯化，则显示是什么类型
             end
         end
 
