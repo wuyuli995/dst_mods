@@ -1,88 +1,113 @@
 local function getWorldEntityInfo(target)
-    local info = {}
+    local text = ""
     if target.components then
-        -- 血量
-        if target.components.health then
-            info["血量: "] = string.format("%d/%d", target.components.health.currenthealth, target.components.health.maxhealth)
-        end
-
         -- 伤害 如果目标实体有战斗组件，并且默认伤害大于0
         if target.components.combat and target.components.combat.defaultdamage > 0 then
-            info["伤害: "] = target.components.combat.defaultdamage
+            text = text .. string.format("伤害: %d\n", target.components.combat.defaultdamage)
+        end
+
+        -- 血量
+        if target.components.health then
+            text = text .. string.format("血量: %d / %d\n", target.components.health.currenthealth, target.components.health.maxhealth)
         end
 
         -- 检查目标实体是否可以生长，并且有目标时间（树）
-        if target.components.growable and target.components.growable.targettime then
-            -- GLOBAL.GetTime() 获取饥荒世界当前的时间
-            info["阶段: "] = string.format("%d / %d",target.components.growable:GetStage(), #target.components.growable.stages)
-            info["下一阶段: "] = GetSubTime(target.components.growable.targettime) .. "天"
+        if target.components.growable then
+            text = text .. string.format("阶段: %d / %d\n", target.components.growable:GetStage(), #target.components.growable.stages)
+
+            if target.components.growable.targettime then
+                text = text .. string.format("下一阶段: %d天\n", GetSubTime(target.components.growable.targettime))
+            end
         end
 
         -- 检查目标实体是否可以被采摘，并且有目标时间（树枝、草、浆果、咖啡树）
         if target.components.pickable and target.components.pickable.targettime then
-            info["成熟: "] = GetSubTime(target.components.pickable.targettime) .. "天"
+            text = text .. string.format("成熟: %d天\n", GetSubTime(target.components.pickable.targettime))
         end
 
         -- 检查目标实体是否有晾肉架组件，并且正在晾肉，获取晾肉时间的方法
         if target.components.dryer and target.components.dryer:IsDrying() then
-            info["剩余: "] = string.format("%.2f", target.components.dryer:GetTimeToDry() / TUNING.TOTAL_DAY_TIME) .. "天"
+            text = text .. string.format("剩余: %.1f天\n", target.components.dryer:GetTimeToDry() / TUNING.TOTAL_DAY_TIME)
         end
 
         -- 武器
         if target.components.weapon then
-            info["伤害: "] = string.format("%.2f", target.components.weapon.damage)
+            text = text .. string.format("伤害: %.1f\n", target.components.weapon.damage)
         end
 
         -- 位面伤害
-        if target.components.planardamage then
-            info["位面伤害: "] = target.components.planardamage:GetDamage()
+        if target.components.planardamage and target.components.planardamage:GetDamage() > 0 then
+            text = text .. string.format("位面伤害: %d\n", target.components.planardamage:GetDamage())
         end
 
         -- 防具
         if target.components.armor then
-            info["防御: "] = ToPercent(target.components.armor.absorb_percent)
-            info["耐久: "] = ToPercent(target.components.armor:GetPercent())
+            text = text .. string.format("防御: %s\n", ToPercent(target.components.armor.absorb_percent))
+            text = text .. string.format("耐久: %s\n", ToPercent(target.components.armor:GetPercent()))
         end
 
         -- 位面防御
-        if target.components.planardefense then
-            info["位面防御: "] = target.components.planardefense:GetDefense()
+        if target.components.planardefense and target.components.planardefense:GetDefense() > 0 then
+            text = text .. string.format("位面防御: %d\n", target.components.planardefense:GetDefense())
         end
 
         -- 使用次数
         if target.components.finiteuses then
-            info["次数: "] = target.components.finiteuses:GetUses()
+            text = text .. string.format("次数: %d\n", target.components.finiteuses:GetUses())
         end
 
         -- 燃料耐久
         if target.components.fueled then
-            info["耐久: "] = ToPercent(target.components.fueled:GetPercent())
+            text = text .. string.format("耐久: %s\n", ToPercent(target.components.fueled:GetPercent()))
         end
 
         -- 保质期
         if not target.components.health and target.components.perishable then
-            info["保质期: "] = GetPerishremainingTime(target.components.perishable.perishremainingtime)
+            text = text .. string.format("保质期: %s\n", GetPerishremainingTime(target.components.perishable.perishremainingtime))
         end
 
         -- 农作物压力值
         if target.components.farmplantstress then
             local stressPoints = target.components.farmplantstress.stress_points
-            info["压力值: "] = stressPoints
+            text = text .. string.format("压力值: %d\n", stressPoints)
         end
 
         -- 温度(暖石)
         if target.components.temperature then
-            info["温度: "] = string.format("%1.f°C", target.components.temperature:GetCurrent())
+            text = text .. string.format("温度: %1.f°C\n", target.components.temperature:GetCurrent())
+        end
+
+        -- 烹饪时间
+        if target.components.stewer and target.components.stewer:IsCooking() then
+            text = text .. string.format("正在烹饪: %s\n", GLOBAL.STRINGS.NAMES[string.upper(target.components.stewer.product)])
+            text = text .. string.format("烹饪时间: %d秒\n", target.components.stewer:GetTimeToCook())
+        end
+
+        -- 训牛信息(绑定牛铃后或者喂食之后显示)
+        if target.components.follower then
+            print("follower -->", target.components.follower:GetLeader())
+        end
+        if target.components.domesticatable then
+            local obedience = target.components.domesticatable:GetObedience()
+            if obedience > 0 or (target.components.follower and target.components.follower:GetLeader()) then
+                text = text .. string.format("顺从: %s\n", ToPercent(obedience))
+
+                local domestication = math.floor(target.components.domesticatable:GetDomestication() + 0.5)
+                text = text .. string.format("驯化: %s\n", ToPercent(domestication))
+            end
+
+            print("驯化 ->", target.components.domesticatable:GetDomestication())
+            print("顺从 ->", string.format("%.2f", target.components.domesticatable:GetObedience()*100))
+            print("是否驯化 ->", target.components.domesticatable.domesticated)
+
+            if target.components.domesticatable.domesticated then
+                -- 如果已经驯化，则显示是什`么类型
+            end
         end
 
     end
 
-    local str = ""
-    for key, value in pairs(info) do
-        str = str .. "\n" .. key .. value
-    end
-
-    return str
+    return text
 end
 
 -- 鼠标悬浮在物品上
@@ -94,7 +119,7 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         if target then
             -- 获取饥荒世界预制物相关信息
-            str = str .. getWorldEntityInfo(target)
+            str = str .. "\n" .. getWorldEntityInfo(target)
         end
 
         return setString(text, str)

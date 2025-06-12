@@ -6,8 +6,6 @@ local Text = require "widgets/text"
 local Equipment = Class(Widget, function (self, runspeed, damage)
     Widget._ctor(self, "Equipment")
 
-    print("runspeed ->", runspeed)
-    print("damage ->", damage)
     self.baseRunspeed = runspeed
     self.baseDamage = damage
     self.runspeed = runspeed

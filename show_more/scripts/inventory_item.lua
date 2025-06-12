@@ -7,84 +7,79 @@ local function getInventoryItemInfo(item)
         return ""
     end
 
-    local info = {}
+    local text = ""
 
     -- 如果物品可食用
     if item.components.edible then
         -- 三维
         local hunger = item.components.edible:GetHunger(item)
         if hunger > 0 then
-            info["饥饿: "] = string.format("+%.2f", hunger)
+            text = text .. string.format("饥饿: +%.1f\n", hunger)
         elseif hunger < 0 then
-            info["饥饿: "] = string.format("%.2f", hunger)
+            text = text .. string.format("饥饿: %.1f\n", hunger)
         end
 
         local sanity = item.components.edible:GetSanity(item)
         if sanity > 0 then
-            info["精神: "] = string.format("+%2.f", sanity)
+            text = text .. string.format("精神: +%.1f\n", sanity)
         elseif sanity < 0 then
-            info["精神: "] = string.format("%2.f", sanity)
+            text = text .. string.format("精神: %.1f\n", sanity)
         end
 
         local health = item.components.edible:GetHealth(item)
         if health > 0 then
-            info["生命: "] = string.format("+%2.f", health)
+            text = text .. string.format("生命: +%.1f\n", health)
         elseif health < 0 then
-            info["生命: "] = string.format("%2.f", health)
+            text = text .. string.format("生命: %.1f\n", health)
         end
     end
 
     -- 保质期
     if item.components.perishable then
-        info["保质期: "] = GetPerishremainingTime(item.components.perishable.perishremainingtime)
+        text = text .. string.format("保质期: %s\n", GetPerishremainingTime(item.components.perishable.perishremainingtime))
     end
 
     -- 武器
     if item.components.weapon then
-        info["伤害: "] = string.format("%.2f", item.components.weapon.damage)
+        text = text .. string.format("伤害: %.1f\n", item.components.weapon.damage)
     end
 
     -- 位面伤害
     if item.components.planardamage then
-        info["位面伤害: "] = item.components.planardamage:GetDamage()
+        text = text .. string.format("位面伤害: %d\n", item.components.planardamage:GetDamage())
     end
 
     -- 防具
     if item.components.armor then
-        info["防御: "] = ToPercent(item.components.armor.absorb_percent)
+        text = text .. string.format("防御: %s\n", ToPercent(item.components.armor.absorb_percent))
     end
 
     -- 位面防御
     if item.components.planardefense then
-        info["位面防御: "] = item.components.planardefense:GetDefense()
+        text = text .. string.format("位面防御: %d\n", item.components.planardefense:GetDefense())
     end
     
     -- 防水
     if item.components.waterproofer then
-        info["防水: "] = ToPercent(item.components.waterproofer:GetEffectiveness())
+        text = text .. string.format("防水: %s\n", ToPercent(item.components.waterproofer:GetEffectiveness()))
     end
 
     -- 保温
     if item.components.insulator then
-        info["保温: "] = item.components.insulator:GetInsulation()
+        text = text .. string.format("保温: %d\n", item.components.insulator:GetInsulation())
     end
 
     -- 使用次数
     if item.components.finiteuses then
-        info["次数: "] = item.components.finiteuses:GetUses()
+        text = text .. string.format("次数: %d\n", item.components.finiteuses:GetUses())
     end
 
     -- 温度(暖石)
     if item.components.temperature then
-        info["温度: "] = string.format("%2.f°C", item.components.temperature:GetCurrent())
+        text = text .. string.format("温度: %1.f°C\n", item.components.temperature:GetCurrent())
     end
 
-    local str = ""
-    for key, value in pairs(info) do
-        str = str .. "\n" .. key .. value
-    end
-
-    return str
+    return text
 end
 
 -- 重写 InventoryBar 的 UpdateCursorText 方法
@@ -112,7 +107,7 @@ function ItemTile:GetDescriptionString()
     end
 
     if string.len(str) > 0 then
-        descStr = descStr .. str
+        descStr = descStr .. "\n" .. str
     end
 
     return descStr

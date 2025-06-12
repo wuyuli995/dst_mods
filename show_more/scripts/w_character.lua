@@ -64,6 +64,8 @@ AddComponentPostInit("moisture", function (self)
             return
         end
 
-        ciWidget:UpdateMoisture(self:GetMoisturePercent(), data.old - data.new)
+        if data.old - data.new ~= 0 then
+            ciWidget:UpdateMoisture(self:GetMoisturePercent(), data.old - data.new)
+        end
     end)
 end)

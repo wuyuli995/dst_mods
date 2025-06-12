@@ -35,12 +35,7 @@ AddComponentPostInit("worldstate", function(self)
             return
         end
 
-        print("cycles -->", cycles)
         clockWidget:UpdateCycles(cycles)
-    end)
-
-    self.inst:ListenForEvent("moonphasechanged2", function (src, data)
-        print("moonphasechanged2 -->", data.moonphase)
     end)
 end)
 
