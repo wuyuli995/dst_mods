@@ -85,12 +85,12 @@ local function getWorldEntityInfo(target)
 
         -- 训牛信息(绑定牛铃后或者喂食之后显示)
         if target.components.domesticatable then
-            local obedience = target.components.domesticatable:GetObedience()
-            local domestication = target.components.domesticatable:GetDomestication()
+            local obedience = RoundToNthDecimal(target.components.domesticatable:GetObedience() * 100, 2)
+            local domestication = RoundToNthDecimal(target.components.domesticatable:GetDomestication() * 100, 2)
             if obedience > 0 or (target.components.follower and target.components.follower:GetLeader()) then
                 text = text .. string.format("饥饿: %d/%d\n", target.components.hunger.current, target.components.hunger.max)
-                text = text .. string.format("顺从: %s%%\n", string.format("%.2f", obedience*100))
-                text = text .. string.format("驯化: %s%%\n", string.format("%.2f", domestication*100))
+                text = text .. string.format("顺从: %s%%\n", string.format("%.2f", obedience))
+                text = text .. string.format("驯化: %s%%\n", string.format("%.2f", domestication))
 
                 -- 训势
                 for key, value in pairs(target.components.domesticatable.tendencies) do
