@@ -88,24 +88,61 @@ local function getWorldEntityInfo(target)
             local obedience = RoundToNthDecimal(target.components.domesticatable:GetObedience() * 100, 2)
             local domestication = RoundToNthDecimal(target.components.domesticatable:GetDomestication() * 100, 2)
             if obedience > 0 or (target.components.follower and target.components.follower:GetLeader()) then
+                -- 饥饿
                 text = text .. string.format("饥饿: %d/%d\n", target.components.hunger.current, target.components.hunger.max)
-                text = text .. string.format("顺从: %s%%\n", string.format("%.2f", obedience))
-                text = text .. string.format("驯化: %s%%\n", string.format("%.2f", domestication))
 
-                -- 训势
-                for key, value in pairs(target.components.domesticatable.tendencies) do
-                    if key == GLOBAL.TENDENCY.ORNERY then
-                        text = text .. string.format("战牛: %.2f%%\n", value)
-                    elseif key == GLOBAL.TENDENCY.RIDER then
-                        text = text .. string.format("行牛: %.2f%%\n", value)
-                    elseif key == GLOBAL.TENDENCY.PUDGY then
-                        text = text .. string.format("肥牛: %.2f%%\n", value)
+                -- 顺从
+                local saddleable = ""
+                local canride = ""
+                if target.components.rideable then
+                    if obedience > 10 and target.components.rideable.saddleable and target.components.rideable.saddle == nil then
+                        -- 是否可以安装鞍具
+                        saddleable = "请装鞍具"
+                    end
+
+                    if obedience > 50 and target.components.rideable.canride and target.components.rideable.rider == nil then
+                        -- 是否可以骑
+                        canride = "请上牛"
                     end
                 end
-            end
 
-            if target.components.domesticatable.domesticated then
-                -- 如果已经驯化，则显示是什么类型
+                text = text .. string.format("顺从: %s%% %s %s\n", string.format("%.2f", obedience), saddleable, canride)
+
+                if target.components.domesticatable.domesticated then
+                    -- 如果已经驯化，则显示是什么类型
+                    local beefaloType = ""
+                    for key, value in pairs(target.components.domesticatable.tendencies) do
+                        if RoundToNthDecimal(value, 0) == 1 then
+                            if key == GLOBAL.TENDENCY.ORNERY then
+                                beefaloType = "战牛"
+                            elseif key == GLOBAL.TENDENCY.RIDER then
+                                beefaloType = "行牛"
+                            elseif key == GLOBAL.TENDENCY.PUDGY then
+                                beefaloType = "肥牛"
+                            else
+                                beefaloType = "普通牛"
+                            end
+                        end
+                    end
+                    text = text .. string.format("驯化: %s%% 类型: %s\n", string.format("%.2f", domestication), beefaloType)
+                else
+                    -- 训势
+                    local ten = ""
+                    for key, value in pairs(target.components.domesticatable.tendencies) do
+                        if key == GLOBAL.TENDENCY.ORNERY then
+                            ten = ten .. string.format("战牛: %.2f%% ", value)
+                        elseif key == GLOBAL.TENDENCY.RIDER then
+                            ten = ten .. string.format("行牛: %.2f%% ", value)
+                        elseif key == GLOBAL.TENDENCY.PUDGY then
+                            ten = ten .. string.format("肥牛: %.2f%% ", value)
+                        else
+                            ten = ten .. string.format("普通牛: %.2f%% ", value)
+                        end
+                    end
+
+                    -- 训化
+                    text = text .. string.format("驯化: %s%% %s\n", string.format("%.2f", domestication), ten)
+                end
             end
         end
 
@@ -123,7 +160,7 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         if target then
             -- 获取饥荒世界预制物相关信息
-            str = str .. "\n" .. getWorldEntityInfo(target)
+            str = str .. "\n" .. getWorldEntityInfo(target) .. "\n"
         end
 
         return setString(text, str)
