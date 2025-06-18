@@ -5,8 +5,6 @@ local assets = {
 PLACER_SCALE = 1.5
 
 local function OnEnableHelper(inst, enabled)
-    print("inst -->", inst)
-    print("enabled -->", enabled)
     if enabled then
         if inst.helper == nil then
             inst.helper = CreateEntity()
