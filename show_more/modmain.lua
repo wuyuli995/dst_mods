@@ -14,3 +14,5 @@ modimport("scripts/w_equipment")
 -- 世界时钟信息
 modimport("scripts/w_clock")
 
+-- 显示建筑范围
+modimport("scripts/show_range")
